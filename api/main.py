@@ -7,10 +7,9 @@ from typing import Optional
 
 app = FastAPI()
 
-# Add CORS middleware to allow requests from the frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # For production, set this to your frontend URL
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -19,18 +18,16 @@ app.add_middleware(
 class PromptRequest(BaseModel):
     prompt: str
 
-# Rate limiting dictionary (simple in-memory store, use Redis in production)
+# Rate limiting dictionary (We will use Redis in production)
 request_counts = {}
 
-# Validate the API key in the request header
 def get_api_key(x_api_key: Optional[str] = Header(None)):
     if not x_api_key:
         raise HTTPException(status_code=401, detail="API Key is required")
     return x_api_key
 
-# Simple rate limiting (in a production app, use a proper rate limiting solution)
 def check_rate_limit(api_key: str):
-    max_requests = 10  # Max requests per minute
+    max_requests = 10  
     
     if api_key not in request_counts:
         request_counts[api_key] = 1
@@ -42,15 +39,12 @@ def check_rate_limit(api_key: str):
 @app.post("/generate")
 async def generate_response(request: PromptRequest, api_key: str = Depends(get_api_key)):
     try:
-        # Check rate limit
         check_rate_limit(api_key)
         
-        # Configure OpenAI with the provided API key
-        openai.api_key = api_key
+        ai.api_key = api_key
         
-        # Call OpenAI API
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # You can change this to a different model
+        response = ai.ChatCompletion.create(
+            model="gpt-3.5-turbo", 
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": request.prompt}
@@ -59,7 +53,6 @@ async def generate_response(request: PromptRequest, api_key: str = Depends(get_a
             temperature=0.7,
         )
         
-        # Extract response content
         assistant_response = response.choices[0].message.content
         
         return {"response": assistant_response}

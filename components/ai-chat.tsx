@@ -9,7 +9,6 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 
-// Add framer-motion to package.json
 import { type message, useMessages } from '@/hooks/use-messages';
 
 export function AIChat() {
@@ -37,7 +36,7 @@ export function AIChat() {
       return;
     }
 
-    // Check if API key exists (now using Gemini API key)
+    // Check if API key exists (Gemini API key)
     const apiKey = localStorage.getItem('gemini-api-key');
     if (!apiKey) {
       toast({
@@ -53,7 +52,7 @@ export function AIChat() {
     
     // Create an AbortController with a timeout
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
     
     try {
       // Use Gemini API with the gemini-2.0-flash model that works with your API key
@@ -83,14 +82,12 @@ export function AIChat() {
       }
 
       const data = await response.json();
-      // Extract the response text from Gemini API response format
       const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated';
       addMessage({ role: 'assistant', content: responseText });
       setPrompt('');
     } catch (error: any) {
       console.error('Error:', error);
       
-      // Check if the error is an AbortError
       if (error.name === 'AbortError') {
         toast({
           title: "Request Timeout",
@@ -105,7 +102,7 @@ export function AIChat() {
         });
       }
     } finally {
-      clearTimeout(timeoutId); // Clear the timeout
+      clearTimeout(timeoutId);
       setIsLoading(false);
     }
   };
