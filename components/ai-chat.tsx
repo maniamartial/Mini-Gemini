@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
@@ -20,23 +21,12 @@ export function AIChat() {
   const { toast } = useToast();
   const { messages, addMessage, clearMessages } = useMessages();
 
+  
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!prompt.trim()) {
-      toast({
-        title: "Empty prompt",
-        description: "Please enter a prompt to generate a response.",
-        variant: "destructive",
-      });
-      return;
-    }
 
-    // Check if API key exists (Gemini API key)
     const apiKey = localStorage.getItem('gemini-api-key');
     if (!apiKey) {
       toast({
@@ -47,62 +37,50 @@ export function AIChat() {
       return;
     }
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!prompt.trim()) {
+      toast({
+        title: "Empty prompt",
+        description: "Please enter a prompt to generate a response.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
     addMessage({ role: 'user', content: prompt });
-    
-    // Create an AbortController with a timeout
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60000);
-    
     try {
-      // Use Gemini API with the gemini-2.0-flash model that works with your API key
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
-        method: 'POST',
+      const response = await fetch("http://localhost:8000/generate", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
         },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: prompt
-                }
-              ]
-            }
-          ]
-        }),
+        body: JSON.stringify({ prompt }),
         signal: controller.signal,
       });
+      
 
       if (!response.ok) {
-        const errorData = await response.text();
-        console.error('API Error:', response.status, errorData);
-        throw new Error(`API error: ${response.status} - ${errorData}`);
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to generate response.');
       }
 
       const data = await response.json();
-      const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated';
-      addMessage({ role: 'assistant', content: responseText });
+      console.log(data)
+      const reply = data?.response || 'No response generated';
+      addMessage({ role: 'assistant', content: reply });
       setPrompt('');
     } catch (error: any) {
-      console.error('Error:', error);
-      
-      if (error.name === 'AbortError') {
-        toast({
-          title: "Request Timeout",
-          description: "The request took too long to complete. Please try again with a shorter prompt.",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: `Failed to generate response: ${error.message || "Unknown error"}`,
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "Error",
+        description: error.message || "Something went wrong.",
+        variant: "destructive",
+      });
     } finally {
-      clearTimeout(timeoutId);
       setIsLoading(false);
     }
   };
