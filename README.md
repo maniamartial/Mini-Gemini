@@ -49,14 +49,22 @@ npm run api
 
 3. Open your browser and navigate to http://localhost:3000
 
+
 4. Add your GEMINI API key in the settings
+ 
 
 ## Usage
 
 1. Click the settings icon in the top-right corner
 2. Enter your GEMINI API key
-3. Start chatting with the AI by entering prompts in the text area
-4. View and copy responses as needed
+      ![Screenshot 2025-04-19 at 17 53 50](https://github.com/user-attachments/assets/87a3fb33-2bf4-49f5-88d3-cf1d8b29fc78)
+
+4. Start chatting with the AI by entering prompts in the text area
+   ![Screenshot 2025-04-19 at 16 45 51](https://github.com/user-attachments/assets/7e08eaea-4d5a-4e6b-900c-c007d0380ee7)
+
+6. View and copy responses as needed
+   ![Screenshot 2025-04-19 at 16 44 52](https://github.com/user-attachments/assets/37bd5522-8cca-4541-bf51-8bd3974709b4)
+
 
 ## Tech Stack
 
