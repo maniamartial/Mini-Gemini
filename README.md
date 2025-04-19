@@ -1,6 +1,6 @@
 # AI Assistant
 
-A full-stack web application using Next.js and FastAPI to interact with OpenAI's API.
+A full-stack web application using Next.js and FastAPI to interact with GEMINI's API.
 
 ## Features
 
@@ -17,7 +17,7 @@ A full-stack web application using Next.js and FastAPI to interact with OpenAI's
 
 - Node.js (v18 or later)
 - Python (v3.8 or later)
-- OpenAI API key
+- Gemini API key
 
 ### Installation
 
@@ -49,19 +49,19 @@ npm run api
 
 3. Open your browser and navigate to http://localhost:3000
 
-4. Add your OpenAI API key in the settings
+4. Add your GEMINI API key in the settings
 
 ## Usage
 
 1. Click the settings icon in the top-right corner
-2. Enter your OpenAI API key
+2. Enter your GEMINI API key
 3. Start chatting with the AI by entering prompts in the text area
 4. View and copy responses as needed
 
 ## Tech Stack
 
 - **Frontend**: Next.js, TypeScript, Tailwind CSS, shadcn/ui
-- **Backend**: FastAPI, Python, OpenAI API
+- **Backend**: FastAPI, Python, GEMINI API
 - **State Management**: React Hooks
 - **Styling**: Tailwind CSS
 - **Animations**: Framer Motion
